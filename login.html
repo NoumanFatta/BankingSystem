@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <p id="hello"></p>
+    <p id="balance">Your new balance is, </p>
+    <input type="number" id="wit_dep" min="1" name="" placeholder="Enter the amount to deposit">
+    <input type="button" onclick="deposit()" value="deposit">
+    <input type="button" onclick="withdraw()" value="withdraw">
+    <input type="button" onclick="logOut()" value="Logout">
+</body>
+<script>
+    if (localStorage.getItem("id") == 0) {
+        window.open("signin.html", "_self");
+    }
+    var name = localStorage.getItem("userLogName")
+    var name2 = localStorage.getItem(name)
+    var upBal = name2.slice(name2.lastIndexOf("bal") + 5, name2.length - 1);
+    var hello = document.getElementById("hello")
+    var showBal = document.getElementById("balance")
+    hello.textContent = "hello, ";
+    hello.textContent += localStorage.getItem("userLogName");
+    showBal.textContent += upBal;
+</script>
+<script src="script.js"></script>
+
+</html>
