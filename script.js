@@ -1,102 +1,83 @@
-var inpDeposit = document.getElementById("wit_dep");
-var inpUser = document.getElementById("userName");
-var inpPass = document.getElementById("password");
-var accounts = {}
-function singUp() {
-    var username = inpUser.value;
-    var password = inpPass.value;
-    accounts = { name: username, password: password, bal: 0 }
-    var checkName = localStorage.getItem(username);
-    if (!checkName) {
-        if (username && password) {
-            localStorage.setItem(username, JSON.stringify(accounts));
-            localStorage.setItem("id", 0);
-            alert("You are succesfully registered")
-            location.reload();
+if (!localStorage.getItem("loginStatus")) {
+    function radioCheck(id) {
+        if (id == "tab-1") {
+            sessionStorage.setItem(id, true);
+            sessionStorage.removeItem("tab-2");
+        }
+        else if (id == "tab-2") {
+            sessionStorage.setItem(id, true);
+            sessionStorage.removeItem("tab-1");
         }
     }
-    else {
-        alert("username already exists")
-        location.reload();
+    if (sessionStorage.getItem("tab-1")) {
+        document.getElementsByTagName("input")[0].setAttribute("checked", "checked");
+        document.getElementsByTagName("input")[1].removeAttribute("checked");
     }
-};
-
-function signIn() {
-    var username = inpUser.value;
-    var password = inpPass.value;
-    var checkName = localStorage.getItem(username);
-    if (username && password) {
-        if (checkName) {
-            checkName2 = checkName.slice(9, 9 + username.length);
-            var checkBal = checkName.slice(31 + username.length + password.length, checkName.length - 1)
-            var checkPass = checkName.slice(23 + username.length, 23 + username.length + password.length)
-            if (username == checkName2 && password == checkPass) {
-                localStorage.setItem("id", 1);
-                localStorage.setItem("userLogName", checkName2)
-                localStorage.setItem("userLogBal", checkBal)
-                localStorage.setItem("userLogPass", checkPass)
-                window.open("login.html", "_self");
-            }
-            else {
-                alert("Login failed")
-            }
+    else {
+        document.getElementsByTagName("input")[1].setAttribute("checked", "checked");
+        document.getElementsByTagName("input")[0].removeAttribute("checked");
+    }
+    function Data(firstName, lastName, email, password, gender, balance) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.gender = gender;
+        this.balance = balance;
+    }
+    function signup() {
+        var fName = document.getElementById("firstName");
+        var lName = document.getElementById("lastName");
+        var inputEmail = document.getElementById("inputEmail");
+        var inputPass = document.getElementById("inputPass");
+        var firstName = fName.getElementsByTagName("input")[0].value;
+        var lastName = lName.getElementsByTagName("input")[0].value;
+        var email = inputEmail.getElementsByTagName("input")[0].value;
+        var password = inputPass.getElementsByTagName("input")[0].value;
+        var inputGender = document.getElementById("inputGender");
+        var gender;
+        if (inputGender.getElementsByTagName("input")[0].checked) {
+            gender = inputGender.getElementsByTagName("input")[0].value;
         }
         else {
-            alert("Login failed")
+            gender = inputGender.getElementsByTagName("input")[1].value;
+        }
+        var newUser = new Data(firstName, lastName, email, password, gender, 0);
+        if (localStorage.getItem(email) == null) {
+            localStorage.setItem(email, JSON.stringify(newUser));
+            alert("Your account has been created");
+            location.reload();
+        }
+        else {
+            alert("email already exits!");
+            location.reload();
+        }
+    }
+
+    function logIn() {
+        if (!localStorage.getItem("loginStatus")) {
+            var logEmail = document.getElementById("logEmail");
+            var logPass = document.getElementById("logPass");
+            var email = logEmail.getElementsByTagName("input")[0].value;
+            var password = logPass.getElementsByTagName("input")[0].value;
+            var details = JSON.parse(localStorage.getItem(email));
+            if (localStorage.getItem(email) && password == details.password) {
+                var userObject = localStorage.getItem(email)
+                localStorage.setItem("currentLoginDetails", userObject);
+                localStorage.setItem("loginStatus", true);
+                window.open("login.html", '_self');
+            }
+            else {
+                var error = document.getElementById("error-msg");
+                error.innerHTML = "Invalid email or password";
+            }
+        }
+        else{
             location.reload();
         }
     }
 }
 
-function logOut() {
-    localStorage.setItem("id", 0)
-    localStorage.removeItem("userLogName");
-    localStorage.removeItem("userLogBal");
-    localStorage.removeItem("userLogPass");
-    window.open("signin.html", "_self")
+else {
+    window.open("login.html", '_self')
 }
-function deposit() {
-    var deposit = inpDeposit.value;
-    if (deposit < 1) {
-        alert("invalid amount")
-    }
-    else {
-        var amount = parseInt(deposit) + parseInt(upBal);
-        accounts = { name: localStorage.getItem("userLogName"), password: localStorage.getItem("userLogPass"), bal: amount }
-        localStorage.setItem(localStorage.getItem("userLogName"), JSON.stringify(accounts));
-        alert(deposit + " Rs. Has been depositted to your account");
-    }
-    location.reload();
-}
-
-
-function withdraw() {
-    var withdraw = inpDeposit.value;
-    if(withdraw < 1){
-        alert("Invalid amount");
-    }
-    else if (parseInt(withdraw) > upBal) {
-        alert("Amount is greater than your balance!");
-    }
-    else {
-        var amount = parseInt(upBal) - parseInt(withdraw);
-        accounts = { name: localStorage.getItem("userLogName"), password: localStorage.getItem("userLogPass"), bal: amount }
-        localStorage.setItem(localStorage.getItem("userLogName"), JSON.stringify(accounts));
-        alert(withdraw + " Rs. Has been withdrawn from your account");
-    }
-    location.reload();
-}
-
-// var testObject = {name:"nouman",pass:"123",bal:200};
-
-// // Put the object into storage
-// localStorage.setItem(testObject.name, JSON.stringify(testObject));
-
-// // Retrieve the object from storage
-// var retrievedObject = localStorage.getItem('testObject');
-
-// console.log(JSON.parse(retrievedObject));
-// // console.log(testObject)
-// console.log(localStorage.getItem("adil"))
-// var a = localStorage.getItem("adil")
-// console.log("pass:",a.slice(9,a.length-2))
